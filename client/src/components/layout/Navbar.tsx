@@ -1,5 +1,6 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../../providers/AuthProvider';
+import logo from '../../assets/logo.svg';
 
 const marketingLinks = [
   { to: '/features/crm', label: 'CRM' },
@@ -16,8 +17,8 @@ export const Navbar = () => {
     <header className="sticky top-0 z-40 border-b border-slate-100 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link to="/" className="flex items-center gap-2 text-lg font-semibold text-slate-900">
-          <span className="rounded-md bg-brand/10 p-2 text-brand">SA</span>
-          SimpleAutomate
+          <img src={logo} alt="SimpleAutomate logo" className="h-9 w-9 rounded-full border border-slate-200 bg-white p-1" />
+          <span>SimpleAutomate</span>
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">

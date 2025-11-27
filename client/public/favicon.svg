@@ -1,0 +1,45 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGradient" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#b1f4cf" />
+      <stop offset="1" stop-color="#89b4ff" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M60 6 16 20v33c0 21.4 16.3 41.2 44 58.6 27.7-17.4 44-37.2 44-58.6V20L60 6Z"
+    fill="url(#shieldGradient)"
+    stroke="#0f162e"
+    stroke-width="4"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M60 64c-10.5 0-19-8.5-19-19s8.5-19 19-19 19 8.5 19 19-8.5 19-19 19Zm0-10a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"
+    fill="#0f162e"
+  />
+  <path
+    d="M36 86c4-11 13.3-18 24-18s20 7 24 18"
+    stroke="#0f162e"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M41 91h38c3 0 5-2.7 5-6v-6c-6.3-6-14.5-9-24-9s-17.7 3-24 9v6c0 3.3 2 6 5 6Z"
+    fill="#0f162e"
+  />
+  <path
+    d="M48 72v-6M72 72v-6"
+    stroke="#fff"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M54 44h12"
+    stroke="#0f162e"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
+

@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../providers/AuthProvider';
+import logo from '../../assets/logo.svg';
 
 const navLinks = [
   { to: '/dashboard', label: 'Overview' },
@@ -17,7 +18,8 @@ export const DashboardLayout = () => {
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
       <aside className="hidden w-64 flex-col border-r border-slate-200 bg-white/90 p-6 lg:flex">
-        <Link to="/" className="mb-6 text-lg font-semibold text-slate-900">
+        <Link to="/" className="mb-6 flex items-center gap-2 text-lg font-semibold text-slate-900">
+          <img src={logo} alt="SimpleAutomate logo" className="h-8 w-8 rounded-full border border-slate-200 bg-white p-1" />
           SimpleAutomate
         </Link>
         <nav className="flex flex-1 flex-col gap-1 text-sm">
