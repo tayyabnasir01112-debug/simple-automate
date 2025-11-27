@@ -5,7 +5,7 @@ services:
     plan: starter
     region: oregon
     branch: main
-    repo: https://github.com/REPLACE_WITH_YOUR_ORG/simpleautomate
+    repo: https://github.com/tayyabnasir01112-debug/simple-automate
     buildCommand: cd server && npm install && npm run build
     startCommand: cd server && npm run start
     envVars:
@@ -38,7 +38,7 @@ services:
     env: node
     plan: starter
     schedule: "*/15 * * * *"
-    repo: https://github.com/REPLACE_WITH_YOUR_ORG/simpleautomate
+    repo: https://github.com/tayyabnasir01112-debug/simple-automate
     branch: main
     buildCommand: ""
     startCommand: >
