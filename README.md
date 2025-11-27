@@ -115,6 +115,19 @@ The script walks you through `neonctl` auth, creates a project/branch, and print
 - Save email templates, create a campaign (immediate + scheduled)
 - Stripe Checkout -> verify subscription status updates after webhook
 
+### Automated smoke test
+
+Run an end-to-end production check (signup, verification email, CRM actions, automation enqueue, campaign delivery, billing endpoint):
+
+```bash
+cd simpleautomate
+npx tsx scripts/smoke-test.ts
+# optional overrides:
+# API_URL=https://simpleautomate-api.onrender.com/api FRONTEND_URL=https://simpleautomate.co.uk npx tsx scripts/smoke-test.ts
+```
+
+The script provisions disposable GuerrillaMail inboxes, confirms the verification + campaign emails arrive, and exercises contacts, notes, tasks, automations, templates, and billing.
+
 ## Secrets to Collect
 
 When you're ready to go live, you'll need:
