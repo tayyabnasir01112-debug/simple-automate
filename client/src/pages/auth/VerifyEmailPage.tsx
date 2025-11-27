@@ -1,23 +1,55 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Seo } from '../../components/seo/Seo';
 import { api } from '../../lib/api';
 
 export const VerifyEmailPage = () => {
   const [status, setStatus] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const urlToken = searchParams.get('token') ?? '';
+  const [tokenValue, setTokenValue] = useState(urlToken);
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (urlToken) {
+      setTokenValue(urlToken);
+      handleTokenVerification(urlToken);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlToken]);
+
+  const handleTokenVerification = async (token: string) => {
+    if (!token) return;
+    try {
+      setSubmitting(true);
+      await api.post('/auth/verify', { token });
+      setStatus('Email verified! You can return to the app.');
+    } catch (error) {
+      console.error(error);
+      setStatus('Invalid or expired token. Paste the latest token or resend a new one.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleVerify = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    await api.post('/auth/verify', { token: form.get('token') });
-    setStatus('Email verified! You can close this tab.');
+    const token = (form.get('token') as string) ?? '';
+    await handleTokenVerification(token);
   };
 
   const handleResend = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    await api.post('/auth/verify-request', { email: form.get('email') });
-    setStatus('Verification link sent.');
+    try {
+      await api.post('/auth/verify-request', { email: form.get('email') });
+      setStatus('Verification link sent.');
+    } catch (error) {
+      console.error(error);
+      setStatus('Unable to send email. Please double-check the address.');
+    }
   };
 
   return (
@@ -36,10 +68,15 @@ export const VerifyEmailPage = () => {
                 <input
                   name="token"
                   required
+                  value={tokenValue}
+                  onChange={(event) => setTokenValue(event.target.value)}
                   className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 focus:border-brand focus:outline-none"
                 />
               </label>
-              <button className="mt-4 w-full rounded-full bg-brand px-6 py-3 font-semibold text-white transition hover:bg-brand-dark">
+              <button
+                className="mt-4 w-full rounded-full bg-brand px-6 py-3 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-60"
+                disabled={isSubmitting}
+              >
                 Verify email
               </button>
             </form>
