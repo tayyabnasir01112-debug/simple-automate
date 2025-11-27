@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Seo } from '../../components/seo/Seo';
 import { seoContent } from '../../lib/seo';
 import { UsageTips } from '../../components/help/UsageTips';
+import { TestimonialCarousel } from '../../components/marketing/TestimonialCarousel';
 
 const heroStats = [
   { label: 'Contacts managed', value: '14k+' },
@@ -35,9 +36,13 @@ export const HomePage = () => {
           Built for modern agencies
         </p>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-5xl">
-          {seo.hero.heading}
+          Run your whole client workflow in one place.
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">{seo.hero.subheading}</p>
+        <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">
+          SimpleAutomate is the “all-in-one” workspace for people who hate bouncing between tools.
+          Add a contact, drag it through your pipeline, automate follow-ups, and send a newsletter—
+          all without leaving the same browser tab.
+        </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Link
             to="/signup"
@@ -106,16 +111,7 @@ export const HomePage = () => {
 
       <UsageTips context="marketing" />
 
-      <section className="bg-brand/5 py-20">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-brand">Testimonials</p>
-          <blockquote className="mt-6 text-2xl font-semibold text-slate-900">
-            “We replaced a stack of three tools with SimpleAutomate, kept all of our contacts synced, and
-            finally have automations that the whole team understands.”
-          </blockquote>
-          <p className="mt-4 text-sm text-slate-500">— Isla Gray, Contour Studio</p>
-        </div>
-      </section>
+      <TestimonialCarousel />
     </>
   );
 };
