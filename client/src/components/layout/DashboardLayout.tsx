@@ -56,6 +56,27 @@ export const DashboardLayout = () => {
           </div>
         </header>
 
+        <div className="border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
+          <div className="flex gap-2 overflow-x-auto text-sm">
+            {navLinks.map((link) => (
+              <NavLink
+                key={`mobile-${link.to}`}
+                to={link.to}
+                className={({ isActive }) =>
+                  `rounded-full px-4 py-2 font-semibold transition ${
+                    isActive ? 'bg-brand/10 text-brand' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </div>
+          <p className="mt-2 text-xs text-slate-500">
+            Tip: On phones, swipe this row to jump between sections.
+          </p>
+        </div>
+
         <main className="flex-1 overflow-y-auto px-4 py-8 lg:px-10">
           <Outlet />
         </main>

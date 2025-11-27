@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Seo } from '../../components/seo/Seo';
+import { UsageTips } from '../../components/help/UsageTips';
 
 const sections = [
   {
@@ -54,6 +55,7 @@ export const GuidePage = () => (
         </a>
       </div>
     </section>
+    <UsageTips context="marketing" />
   </>
 );
 

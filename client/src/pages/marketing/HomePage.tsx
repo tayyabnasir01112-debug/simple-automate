@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Seo } from '../../components/seo/Seo';
 import { seoContent } from '../../lib/seo';
+import { UsageTips } from '../../components/help/UsageTips';
 
 const heroStats = [
   { label: 'Contacts managed', value: '14k+' },
@@ -102,6 +103,8 @@ export const HomePage = () => {
           ))}
         </div>
       </section>
+
+      <UsageTips context="marketing" />
 
       <section className="bg-brand/5 py-20">
         <div className="mx-auto max-w-4xl px-6 text-center">

@@ -7,7 +7,7 @@ import { prisma } from '../lib/prisma';
 import { sendSystemEmail, renderEmailLayout } from '../lib/email';
 
 const sendCampaignEmail = async (
-  campaign: EmailCampaign,
+  campaign: EmailCampaign & { user?: { email: string } },
   recipientId: string,
   contactId: string,
 ) => {
@@ -24,6 +24,7 @@ const sendCampaignEmail = async (
     to: contact.email,
     subject: campaign.subject,
     html: renderEmailLayout(campaign.name, campaign.body),
+    replyTo: campaign.user?.email,
   });
 
   await prisma.emailCampaignRecipient.update({
@@ -38,7 +39,10 @@ const sendCampaignEmail = async (
 export const dispatchCampaignNow = async (campaignId: string) => {
   const campaign = await prisma.emailCampaign.findUnique({
     where: { id: campaignId },
-    include: { recipients: true },
+    include: {
+      recipients: true,
+      user: { select: { email: true } },
+    },
   });
   if (!campaign) return;
 

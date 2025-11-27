@@ -7,9 +7,10 @@ type EmailPayload = {
   to: string;
   subject: string;
   html: string;
+  replyTo?: string;
 };
 
-export const sendSystemEmail = async ({ to, subject, html }: EmailPayload) => {
+export const sendSystemEmail = async ({ to, subject, html, replyTo }: EmailPayload) => {
   if (!client) {
     console.warn('Skipping email send - RESEND_API_KEY not configured');
     return;
@@ -20,6 +21,7 @@ export const sendSystemEmail = async ({ to, subject, html }: EmailPayload) => {
     to,
     subject,
     html,
+    ...(replyTo ? { reply_to: replyTo } : {}),
   });
 };
 

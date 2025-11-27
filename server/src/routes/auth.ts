@@ -10,6 +10,7 @@ import { env } from '../config/env';
 import { AppError } from '../middleware/error-handler';
 import { sendSystemEmail, renderEmailLayout } from '../lib/email';
 import { ensureDefaultPipeline } from '../services/pipeline-service';
+import { ensureDefaultTemplates } from '../services/template-service';
 import { refreshSubscriptionForUser } from '../services/subscription-service';
 import { requireAuth, type AuthenticatedRequest } from '../middleware/auth';
 import type { User } from '@prisma/client';
@@ -86,6 +87,7 @@ authRouter.post(
     });
 
     await ensureDefaultPipeline(user.id);
+    await ensureDefaultTemplates(user.id);
     await sendVerificationEmail(user.email, verificationToken);
 
     const { accessToken, refreshToken } = await issueTokens(user.id, user.email, user.subscriptionStatus);

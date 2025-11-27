@@ -104,10 +104,13 @@ const handleEmailStep = async (log: AutomationLog, step: AutomationStep) => {
     }
   }
 
+  const owner = await prisma.user.findUnique({ where: { id: log.userId }, select: { email: true } });
+
   await sendSystemEmail({
     to: contact.email,
     subject,
     html: renderEmailLayout(subject, body),
+    replyTo: owner?.email,
   });
 };
 

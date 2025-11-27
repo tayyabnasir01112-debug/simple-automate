@@ -4,6 +4,7 @@ import { api } from '../../lib/api';
 import type { Task } from '../../types';
 import { useAuth } from '../../providers/AuthProvider';
 import { OnboardingChecklist } from '../../components/dashboard/OnboardingChecklist';
+import { UsageTips } from '../../components/help/UsageTips';
 
 type DashboardResponse = {
   stats: {
@@ -75,6 +76,8 @@ export const DashboardPage = () => {
           </div>
         </div>
       </div>
+
+      <UsageTips context="app" />
     </div>
   );
 };

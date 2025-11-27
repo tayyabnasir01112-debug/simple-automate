@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { requireAuth, type AuthenticatedRequest } from '../middleware/auth';
 import { asyncHandler } from '../utils/async-handler';
 import { prisma } from '../lib/prisma';
+import { ensureDefaultTemplates } from '../services/template-service';
 
 const router = Router();
 router.use(requireAuth);
@@ -10,6 +11,7 @@ router.use(requireAuth);
 router.get(
   '/',
   asyncHandler(async (req: AuthenticatedRequest, res) => {
+    await ensureDefaultTemplates(req.user!.id);
     const templates = await prisma.emailTemplate.findMany({
       where: { userId: req.user!.id },
       orderBy: { updatedAt: 'desc' },
