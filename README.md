@@ -77,13 +77,13 @@ pwsh scripts/deploy-netlify.ps1 -SiteName "<netlify-site-name>" -Team "<optional
 ```
 The script logs in, builds `client/`, sets `VITE_*` env vars (if present), and runs `netlify deploy --prod`.
 
-### Render (backend + cron)
-1. Update the `repo` fields inside `render.yaml` with your GitHub repo.
-2. Run:
-   ```powershell
-   pwsh scripts/deploy-render.ps1
-   ```
-3. After the web service is live, set `API_BASE_URL` for the cron job to the external URL of the API and re-run the blueprint.
+### Render (backend) + GitHub Actions scheduler
+1. Update `render.yaml` with your repo URL.
+2. Provision the web service via the Render dashboard or `pwsh scripts/deploy-render.ps1`.
+3. Secrets to set: `DATABASE_URL`, `APP_BASE_URL`, `FRONTEND_URLS`, `JWT_*`, `CRON_SECRET`, etc.
+4. Cron replacement: `.github/workflows/cron.yml` pings `POST /api/cron/run` every 15 minutes using GitHub Actions.
+   - In GitHub → Settings → Secrets → Actions, create `CRON_SECRET` with the same value Render uses.
+   - Actions are free for public repos, so no paid cron job is required.
 
 ### Neon database
 ```powershell
@@ -93,7 +93,7 @@ The script walks you through `neonctl` auth, creates a project/branch, and print
 
 ## Background Automations
 
-- Render Cron job (defined in `render.yaml`) curls `POST /api/cron/run` every 15 minutes with `CRON_SECRET`.
+- GitHub Actions workflow `.github/workflows/cron.yml` hits `POST /api/cron/run` every 15 minutes (set `CRON_SECRET` in repo secrets).
 - The API processes automation queues, scheduled campaigns, and task reminders whenever that endpoint is hit. You can also invoke it manually:
   ```bash
   curl -X POST "$API_URL/api/cron/run" \

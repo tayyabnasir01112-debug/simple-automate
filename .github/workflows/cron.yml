@@ -1,0 +1,19 @@
+name: Run Automations
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+
+jobs:
+  ping-cron-endpoint:
+    runs-on: ubuntu-latest
+    env:
+      API_URL: https://simpleautomate-api.onrender.com/api/cron/run
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - name: Trigger automation runner
+        run: |
+          curl -X POST "$API_URL" \
+            -H 'Content-Type: application/json' \
+            -d '{"secret":"'"$CRON_SECRET"'"}'
+
