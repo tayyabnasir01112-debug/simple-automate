@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Seo } from '../../components/seo/Seo';
 import { seoContent } from '../../lib/seo';
+import { api } from '../../lib/api';
 
 const inclusions = [
   'Unlimited contacts & pipelines',
@@ -12,6 +14,26 @@ const inclusions = [
 
 export const PricingPage = () => {
   const seo = seoContent['/pricing'];
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleCheckout = async () => {
+    try {
+      setLoading(true);
+      setMessage(null);
+      const origin = window.location.origin;
+      const { data } = await api.post<{ url: string }>('/billing/checkout', {
+        successUrl: `${origin}/settings?checkout=success`,
+        cancelUrl: `${origin}/pricing?checkout=cancelled`,
+      });
+      window.location.href = data.url;
+    } catch (error) {
+      console.error(error);
+      setMessage('Unable to start checkout right now. Please try again or contact support.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -33,12 +55,17 @@ export const PricingPage = () => {
               </li>
             ))}
           </ul>
-          <Link
-            to="/signup"
-            className="mt-8 block rounded-full bg-brand px-6 py-3 text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark"
+          <button
+            onClick={handleCheckout}
+            disabled={loading}
+            className="mt-8 w-full rounded-full bg-brand px-6 py-3 text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark disabled:opacity-60"
           >
-            Start your free trial
+            {loading ? 'Starting checkout…' : 'Start your free trial'}
+          </button>
+          <Link to="/signup" className="mt-3 block text-sm text-brand">
+            Prefer to activate later? Create an account first.
           </Link>
+          {message && <p className="mt-3 text-sm text-red-500">{message}</p>}
         </div>
       </section>
     </>

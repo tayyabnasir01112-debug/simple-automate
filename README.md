@@ -77,6 +77,11 @@ pwsh scripts/deploy-netlify.ps1 -SiteName "<netlify-site-name>" -Team "<optional
 ```
 The script logs in, builds `client/`, sets `VITE_*` env vars (if present), and runs `netlify deploy --prod`.
 
+### Custom domain (`simpleautomate.co.uk`)
+1. **Netlify** – `netlify domains:add simpleautomate.co.uk` (or use the dashboard). Update your DNS provider with the CNAME/TXT records Netlify displays.
+2. **Render API** – In the Render dashboard, open the web service → **Settings → Custom Domains** → add `api.simpleautomate.co.uk` (or any subdomain you prefer) and follow the provided DNS instructions.
+3. Once DNS propagates, Netlify/Render will issue certificates automatically.
+
 ### Render (backend) + GitHub Actions scheduler
 1. Update `render.yaml` with your repo URL.
 2. Provision the web service via the Render dashboard or `pwsh scripts/deploy-render.ps1`.

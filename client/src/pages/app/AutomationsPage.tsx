@@ -229,28 +229,55 @@ export const AutomationsPage = () => {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {automations?.map((automation) => (
-          <div key={automation.id} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-900">{automation.name}</h3>
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                  automation.active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-700'
-                }`}
-              >
-                {automation.active ? 'Active' : 'Paused'}
-              </span>
+        {automations?.map((automation) => {
+          const statusCounts = (automation.logs ?? []).reduce<Record<string, number>>((acc, log) => {
+            acc[log.status] = (acc[log.status] ?? 0) + 1;
+            return acc;
+          }, {});
+
+          return (
+            <div key={automation.id} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">{automation.name}</h3>
+                  <p className="text-xs uppercase tracking-widest text-slate-500">Trigger: {automation.triggerType}</p>
+                </div>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                    automation.active ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  {automation.active ? 'Active' : 'Paused'}
+                </span>
+              </div>
+
+              <ul className="mt-4 space-y-2 text-sm text-slate-600">
+                {automation.steps.map((step, index) => (
+                  <li key={step.id} className="rounded-xl border border-slate-100 px-3 py-2">
+                    Step {index + 1}: {step.type.replace('_', ' ').toLowerCase()}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-600">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Recent activity</p>
+                <div className="mt-2 grid grid-cols-2 gap-3 text-center">
+                  {['COMPLETED', 'RUNNING', 'FAILED', 'QUEUED'].map((status) => (
+                    <div key={status} className="rounded-xl bg-white px-2 py-2 shadow-sm">
+                      <p className="text-2xl font-bold text-slate-900">{statusCounts[status] ?? 0}</p>
+                      <p className="text-[11px] uppercase tracking-wide text-slate-500">{status.toLowerCase()}</p>
+                    </div>
+                  ))}
+                </div>
+                {(automation.logs ?? []).slice(0, 3).map((log) => (
+                  <p key={log.id} className="mt-2 text-xs text-slate-500">
+                    {new Date(log.timestamp).toLocaleString()} · {log.status.toLowerCase()}
+                  </p>
+                ))}
+              </div>
             </div>
-            <p className="mt-2 text-xs uppercase tracking-widest text-slate-500">Trigger: {automation.triggerType}</p>
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              {automation.steps.map((step, index) => (
-                <li key={step.id} className="rounded-xl border border-slate-100 px-3 py-2">
-                  Step {index + 1}: {step.type.replace('_', ' ').toLowerCase()}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -59,6 +59,13 @@ export type Automation = {
   active: boolean;
   triggerType: 'NEW_CONTACT' | 'STAGE_CHANGE' | 'DATE';
   steps: AutomationStep[];
+  logs?: AutomationLog[];
+};
+
+export type AutomationLog = {
+  id: string;
+  status: 'QUEUED' | 'RUNNING' | 'COMPLETED' | 'FAILED';
+  timestamp: string;
 };
 
 export type EmailTemplate = {

@@ -9,6 +9,7 @@ import { ContactPage } from './pages/marketing/ContactPage';
 import { TermsPage } from './pages/marketing/TermsPage';
 import { PrivacyPage } from './pages/marketing/PrivacyPage';
 import { FeaturePage } from './pages/marketing/FeaturePage';
+import { GuidePage } from './pages/marketing/GuidePage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { SignupPage } from './pages/auth/SignupPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
@@ -35,6 +36,7 @@ const App = () => (
       <Route path="/features/automation" element={<FeaturePage path="/features/automation" />} />
       <Route path="/features/email-marketing" element={<FeaturePage path="/features/email-marketing" />} />
       <Route path="/features/pipelines" element={<FeaturePage path="/features/pipelines" />} />
+      <Route path="/guide" element={<GuidePage />} />
     </Route>
 
     <Route path="/login" element={<LoginPage />} />

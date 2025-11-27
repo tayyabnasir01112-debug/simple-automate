@@ -33,10 +33,10 @@ This document tracks every requirement from the original brief and whether it is
 
 | Feature | Status | Notes |
 | --- | --- | --- |
-| Automation builder (triggers/actions) | ⚠️ | Workflow UI exists but minimal guidance; no templates/log viewer. |
-| Bulk email campaigns + scheduling | ⚠️ | Campaigns sent/scheduled, but analytics & segmentation limited. |
+| Automation builder (triggers/actions) | ⚠️ | Builder works and now shows runtime analytics; templates/log viewer roadmap. |
+| Bulk email campaigns + scheduling | ⚠️ | Campaigns now display sent/opened/clicked analytics; segmentation filters still basic. |
 | Saved templates | ✅ | CRUD ready. |
-| Email analytics (sent/opened/clicked) | ⚠️ | DB fields exist, but UI/stats not exposed. |
+| Email analytics (sent/opened/clicked) | ✅ | Campaign cards show delivery metrics per status. |
 
 ## 5. Billing & Trials
 
@@ -71,7 +71,7 @@ This document tracks every requirement from the original brief and whether it is
 
 | Requirement | Status | Notes |
 | --- | --- | --- |
-| User-friendly guidance/help | ⚠️ | Onboarding checklist added on dashboard; help docs/resources still pending. |
+| User-friendly guidance/help | ✅ | Dashboard checklist, `/guide` page, and docs/help-center.md now cover onboarding + support. |
 | README + operational docs | ✅ | README updated, spec audit (this file) added. |
 
 ---

@@ -112,23 +112,53 @@ export const CampaignsPage = () => {
       </form>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {campaigns?.map((campaign) => (
-          <div key={campaign.id} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900">{campaign.name}</h3>
-                <p className="text-xs uppercase tracking-widest text-slate-500">{campaign.status}</p>
+        {campaigns?.map((campaign) => {
+          const statusCounts = campaign.recipients.reduce<Record<string, number>>((acc, recipient) => {
+            acc[recipient.status] = (acc[recipient.status] ?? 0) + 1;
+            return acc;
+          }, {});
+          const total = campaign.recipients.length || 1;
+
+          return (
+            <div key={campaign.id} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">{campaign.name}</h3>
+                  <p className="text-xs uppercase tracking-widest text-slate-500">{campaign.status}</p>
+                </div>
+                <p className="text-xs text-slate-500">
+                  {campaign.scheduledFor ? new Date(campaign.scheduledFor).toLocaleString() : 'Sending now'}
+                </p>
               </div>
-              <p className="text-xs text-slate-500">
-                {campaign.scheduledFor ? new Date(campaign.scheduledFor).toLocaleString() : 'Sending now'}
-              </p>
+              <div className="mt-4 space-y-2 text-xs text-slate-500">
+                {['PENDING', 'SENT', 'OPENED', 'CLICKED', 'BOUNCED'].map((status) => (
+                  <div key={status}>
+                    <div className="flex items-center justify-between">
+                      <span className="uppercase tracking-wide">{status.toLowerCase()}</span>
+                      <span className="font-semibold text-slate-900">
+                        {statusCounts[status] ?? 0}/{total}
+                      </span>
+                    </div>
+                    <div className="mt-1 h-2 rounded-full bg-slate-100">
+                      <div
+                        className={`h-2 rounded-full ${
+                          status === 'CLICKED'
+                            ? 'bg-emerald-400'
+                            : status === 'OPENED'
+                            ? 'bg-brand'
+                            : status === 'SENT'
+                            ? 'bg-blue-500'
+                            : 'bg-slate-300'
+                        }`}
+                        style={{ width: `${(((statusCounts[status] ?? 0) / total) * 100).toFixed(0)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <p className="mt-4 text-sm text-slate-500">
-              Recipients: {campaign.recipients.length} · Sent:{' '}
-              {campaign.recipients.filter((recipient) => recipient.status === 'SENT').length}
-            </p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
