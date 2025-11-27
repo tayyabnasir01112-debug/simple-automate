@@ -1,0 +1,258 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../server/node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AutomationTriggerType {
+  NEW_CONTACT
+  STAGE_CHANGE
+  DATE
+}
+
+enum AutomationStepType {
+  SEND_EMAIL
+  DELAY
+  UPDATE_TAGS
+  MOVE_STAGE
+}
+
+enum AutomationLogStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum EmailCampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  CANCELLED
+}
+
+enum EmailRecipientStatus {
+  PENDING
+  SENT
+  OPENED
+  CLICKED
+  BOUNCED
+}
+
+model User {
+  id                    String                  @id @default(uuid())
+  email                 String                  @unique
+  passwordHash          String
+  emailVerified         Boolean                 @default(false)
+  verificationToken     String?
+  resetToken            String?
+  resetTokenExpiresAt   DateTime?
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  subscriptionStatus    String                  @default("trialing")
+  trialEndsAt           DateTime?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  contacts              Contact[]
+  pipelines             Pipeline[]
+  notes                 Note[]
+  tasks                 Task[]
+  automations           Automation[]
+  automationLogs        AutomationLog[]
+  emailTemplates        EmailTemplate[]
+  emailCampaigns        EmailCampaign[]
+  sessions              Session[]
+}
+
+model Session {
+  id               String   @id @default(uuid())
+  user             User     @relation(fields: [userId], references: [id])
+  userId           String
+  refreshTokenHash String
+  expiresAt        DateTime
+  createdAt        DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Contact {
+  id          String            @id @default(uuid())
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  name        String
+  email       String?
+  phone       String?
+  tags        String[]
+  createdAt   DateTime          @default(now())
+  stages      ContactStage[]
+  notes       Note[]
+  tasks       Task[]
+  recipients  EmailCampaignRecipient[]
+  automationLogs AutomationLog[]
+
+  @@index([userId, name])
+}
+
+model Pipeline {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+  stages    Stage[]
+
+  @@index([userId])
+}
+
+model Stage {
+  id         String         @id @default(uuid())
+  pipeline   Pipeline       @relation(fields: [pipelineId], references: [id], onDelete: Cascade)
+  pipelineId String
+  name       String
+  position   Int
+  contacts   ContactStage[]
+
+  @@unique([pipelineId, position])
+  @@index([pipelineId])
+}
+
+model ContactStage {
+  id        String   @id @default(uuid())
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String
+  stage     Stage    @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  stageId   String
+  assignedAt DateTime @default(now())
+
+  @@unique([contactId, stageId])
+  @@index([stageId])
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contactId])
+}
+
+model Task {
+  id               String   @id @default(uuid())
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  contact          Contact? @relation(fields: [contactId], references: [id])
+  contactId        String?
+  title            String
+  dueDate          DateTime?
+  completed        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  notificationSent Boolean  @default(false)
+
+  @@index([userId])
+  @@index([dueDate])
+}
+
+model Automation {
+  id            String                 @id @default(uuid())
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  name          String
+  active        Boolean                @default(true)
+  triggerType   AutomationTriggerType
+  triggerConfig Json
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  steps         AutomationStep[]
+  logs          AutomationLog[]
+
+  @@index([userId, active])
+}
+
+model AutomationStep {
+  id           String              @id @default(uuid())
+  automation   Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  automationId String
+  type         AutomationStepType
+  config       Json
+  position     Int
+  createdAt    DateTime            @default(now())
+  logs         AutomationLog[]
+
+  @@unique([automationId, position])
+}
+
+model AutomationLog {
+  id           String               @id @default(uuid())
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  automation   Automation           @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  automationId String
+  step         AutomationStep?      @relation(fields: [stepId], references: [id])
+  stepId       String?
+  contact      Contact?             @relation(fields: [contactId], references: [id])
+  contactId    String?
+  status       AutomationLogStatus
+  message      String?
+  scheduledFor DateTime?
+  processedAt  DateTime?
+  timestamp    DateTime             @default(now())
+
+  @@index([automationId])
+  @@index([contactId])
+}
+
+model EmailTemplate {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  name      String
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, name])
+}
+
+model EmailCampaign {
+  id           String              @id @default(uuid())
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  name         String
+  subject      String
+  body         String
+  status       EmailCampaignStatus @default(DRAFT)
+  scheduledFor DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  recipients   EmailCampaignRecipient[]
+
+  @@index([userId])
+}
+
+model EmailCampaignRecipient {
+  id          String               @id @default(uuid())
+  campaign    EmailCampaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId  String
+  contact     Contact              @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId   String
+  status      EmailRecipientStatus @default(PENDING)
+  sentAt      DateTime?
+  openedAt    DateTime?
+  clickedAt   DateTime?
+  createdAt   DateTime             @default(now())
+
+  @@index([campaignId])
+  @@unique([campaignId, contactId])
+}
+

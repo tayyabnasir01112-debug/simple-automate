@@ -1,0 +1,31 @@
+# dependencies
+node_modules
+client/node_modules
+server/node_modules
+
+# builds
+client/dist
+server/dist
+
+# env files
+.env
+client/.env
+server/.env
+config/*.local
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.DS_Store
+*.sw?
+.idea
+.vscode
+
+# Prisma
+server/node_modules/.prisma
+prisma/migrations/dev.db
+node_modules
