@@ -17,6 +17,10 @@ export const ProtectedRoute = () => {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
+  if (!user.emailVerified && location.pathname !== '/verify-pending') {
+    return <Navigate to="/verify-pending" replace />;
+  }
+
   return <Outlet />;
 };
 

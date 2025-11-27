@@ -13,6 +13,7 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { SignupPage } from './pages/auth/SignupPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
 import { VerifyEmailPage } from './pages/auth/VerifyEmailPage';
+import { VerifyPendingPage } from './pages/auth/VerifyPendingPage';
 import { DashboardPage } from './pages/app/DashboardPage';
 import { ContactsPage } from './pages/app/ContactsPage';
 import { PipelinesPage } from './pages/app/PipelinesPage';
@@ -42,6 +43,7 @@ const App = () => (
     <Route path="/verify-email" element={<VerifyEmailPage />} />
 
     <Route element={<ProtectedRoute />}>
+      <Route path="/verify-pending" element={<VerifyPendingPage />} />
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/contacts" element={<ContactsPage />} />

@@ -20,7 +20,7 @@ export const SignupPage = () => {
         email: data.get('email') as string,
         password: data.get('password') as string,
       });
-      navigate('/dashboard');
+      navigate('/verify-pending', { replace: true });
     } catch (err) {
       console.error(err);
       setError('Unable to create account. Please try again.');
