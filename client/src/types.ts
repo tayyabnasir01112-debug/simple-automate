@@ -23,6 +23,29 @@ export type Pipeline = {
   stages: Array<{ id: string; name: string; position: number }>;
 };
 
+export type PipelineBoard = {
+  id: string;
+  name: string;
+  stages: Array<PipelineStageColumn>;
+};
+
+export type PipelineStageColumn = {
+  id: string;
+  name: string;
+  position: number;
+  contacts: PipelineContactCard[];
+};
+
+export type PipelineContactCard = {
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  tags: string[];
+  createdAt: string;
+  nextTask: { id: string; title: string; dueDate?: string | null } | null;
+};
+
 export type AutomationStep = {
   id: string;
   type: 'SEND_EMAIL' | 'DELAY' | 'UPDATE_TAGS' | 'MOVE_STAGE';

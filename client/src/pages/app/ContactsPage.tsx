@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { api } from '../../lib/api';
 import type { Contact } from '../../types';
+import { NotesDrawer } from '../../components/contacts/NotesDrawer';
 
 const fetchContacts = async () => {
   const { data } = await api.get<{ contacts: Contact[] }>('/contacts');
@@ -13,6 +14,7 @@ export const ContactsPage = () => {
   const queryClient = useQueryClient();
   const { data: contacts } = useQuery({ queryKey: ['contacts'], queryFn: fetchContacts });
   const [isSubmitting, setSubmitting] = useState(false);
+  const [activeContact, setActiveContact] = useState<Contact | null>(null);
 
   const mutation = useMutation({
     mutationFn: (payload: { name: string; email?: string; tags: string[] }) => api.post('/contacts', payload),
@@ -67,7 +69,10 @@ export const ContactsPage = () => {
       </div>
 
       <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
-        <h2 className="text-xl font-semibold text-slate-900">Contacts</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-slate-900">Contacts</h2>
+          <p className="text-xs text-slate-500">Click “Notes” to capture conversations.</p>
+        </div>
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full text-left text-sm text-slate-600">
             <thead>
@@ -76,6 +81,7 @@ export const ContactsPage = () => {
                 <th className="px-4 py-2">Email</th>
                 <th className="px-4 py-2">Tags</th>
                 <th className="px-4 py-2">Stage</th>
+                <th className="px-4 py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -86,8 +92,14 @@ export const ContactsPage = () => {
                   <td className="px-4 py-2 text-xs uppercase tracking-wide text-slate-500">
                     {contact.tags.join(', ') || '—'}
                   </td>
-                  <td className="px-4 py-2 text-sm text-brand">
-                    {contact.stages?.[0]?.stage?.name ?? 'New'}
+                  <td className="px-4 py-2 text-sm text-brand">{contact.stages?.[0]?.stage?.name ?? 'New'}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => setActiveContact(contact)}
+                      className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-brand hover:text-brand"
+                    >
+                      Notes
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -96,6 +108,8 @@ export const ContactsPage = () => {
           {!contacts?.length && <p className="mt-4 text-sm text-slate-500">No contacts yet.</p>}
         </div>
       </div>
+
+      {activeContact && <NotesDrawer contact={activeContact} onClose={() => setActiveContact(null)} />}
     </div>
   );
 };

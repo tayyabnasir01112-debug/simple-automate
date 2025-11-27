@@ -15,7 +15,7 @@ This document tracks every requirement from the original brief and whether it is
 | Requirement | Status | Notes |
 | --- | --- | --- |
 | Email+password signup/login/logout | ✅ | JWT access + refresh cookies. |
-| Email verification enforced before use | ⚠️ | Backend supports tokens + endpoints but frontend doesn’t block unverified users yet. |
+| Email verification enforced before use | ✅ | Signup now routes to `/verify-pending` and protected routes require verified email. |
 | Password reset | ✅ | Token emailed + reset form. |
 | Magic link (optional) | ❌ | Not implemented. |
 | Multi-tenant isolation | ✅ | All queries scoped by `userId`. |
@@ -25,9 +25,9 @@ This document tracks every requirement from the original brief and whether it is
 | Feature | Status | Notes |
 | --- | --- | --- |
 | Contacts (name/email/phone/tags) | ✅ | CRUD + stage assignment. |
-| Pipelines with stages & drag/drop | ⚠️ | Stage reordering works, but Kanban board for cards missing. |
-| Notes with markdown + revision safety | ⚠️ | Notes exist but plain textarea; no markdown preview or versions. |
-| Tasks with due dates + reminders | ⚠️ | Tasks stored; email reminder cron exists, but UI lacks notification panel. |
+| Pipelines with stages & drag/drop | ✅ | Full Kanban board with drag-and-drop between stages. |
+| Notes with markdown + revision safety | ✅ | Markdown editor with preview + revision history drawer. |
+| Tasks with due dates + reminders | ⚠️ | Cron emails scheduled, dashboard shows tasks but no notification center yet. |
 
 ## 4. Marketing Automation
 
@@ -71,7 +71,7 @@ This document tracks every requirement from the original brief and whether it is
 
 | Requirement | Status | Notes |
 | --- | --- | --- |
-| User-friendly guidance/help | ❌ | No onboarding checklist, help modals, or docs page yet. |
+| User-friendly guidance/help | ⚠️ | Onboarding checklist added on dashboard; help docs/resources still pending. |
 | README + operational docs | ✅ | README updated, spec audit (this file) added. |
 
 ---

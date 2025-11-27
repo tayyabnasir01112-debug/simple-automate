@@ -20,6 +20,82 @@ router.get(
   }),
 );
 
+router.get(
+  '/board',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const pipelines = await prisma.pipeline.findMany({
+      where: { userId: req.user!.id },
+      include: { stages: { orderBy: { position: 'asc' } } },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (!pipelines.length) {
+      await ensureDefaultPipeline(req.user!.id);
+    }
+
+    const contacts = await prisma.contact.findMany({
+      where: { userId: req.user!.id },
+      include: {
+        stages: {
+          include: { stage: true },
+          orderBy: { assignedAt: 'desc' },
+          take: 1,
+        },
+        tasks: {
+          where: { completed: false },
+          orderBy: { dueDate: 'asc' },
+          take: 1,
+        },
+      },
+    });
+
+    const stageMap = new Map<string, Array<Record<string, unknown>>>();
+    pipelines.forEach((pipeline) => {
+      pipeline.stages.forEach((stage) => {
+        stageMap.set(stage.id, []);
+      });
+    });
+
+    const fallbackStageId = pipelines[0]?.stages[0]?.id;
+
+    contacts.forEach((contact) => {
+      const currentStageId = contact.stages[0]?.stageId ?? fallbackStageId;
+      if (!currentStageId) return;
+      if (!stageMap.has(currentStageId)) {
+        stageMap.set(currentStageId, []);
+      }
+      stageMap.get(currentStageId)!.push({
+        id: contact.id,
+        name: contact.name,
+        email: contact.email,
+        phone: contact.phone,
+        tags: contact.tags,
+        createdAt: contact.createdAt,
+        nextTask: contact.tasks[0]
+          ? {
+              id: contact.tasks[0].id,
+              title: contact.tasks[0].title,
+              dueDate: contact.tasks[0].dueDate,
+            }
+          : null,
+      });
+    });
+
+    const board = pipelines.map((pipeline) => ({
+      id: pipeline.id,
+      name: pipeline.name,
+      stages: pipeline.stages.map((stage) => ({
+        id: stage.id,
+        name: stage.name,
+        position: stage.position,
+        contacts: stageMap.get(stage.id) ?? [],
+      })),
+    }));
+
+    return res.json({ board });
+  }),
+);
+
 router.post(
   '/',
   asyncHandler(async (req: AuthenticatedRequest, res) => {

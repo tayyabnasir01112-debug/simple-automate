@@ -39,6 +39,14 @@ router.post(
       },
     });
 
+    await prisma.noteRevision.create({
+      data: {
+        noteId: note.id,
+        userId: req.user!.id,
+        content: body.content,
+      },
+    });
+
     return res.status(201).json({ note });
   }),
 );
@@ -59,7 +67,32 @@ router.put(
       data: { content: body.content },
     });
 
+    await prisma.noteRevision.create({
+      data: {
+        noteId: existing.id,
+        userId: req.user!.id,
+        content: body.content,
+      },
+    });
+
     return res.json({ note: updated });
+  }),
+);
+
+router.get(
+  '/:id/revisions',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const note = await prisma.note.findFirst({
+      where: { id: req.params.id, userId: req.user!.id },
+    });
+    if (!note) throw new AppError('Note not found', 404);
+
+    const revisions = await prisma.noteRevision.findMany({
+      where: { noteId: note.id },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return res.json({ revisions });
   }),
 );
 

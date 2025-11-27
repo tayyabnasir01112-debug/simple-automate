@@ -9,15 +9,20 @@ router.use(requireAuth);
 router.get(
   '/',
   asyncHandler(async (req: AuthenticatedRequest, res) => {
-    const [contactCount, activeTasks, wonStages] = await Promise.all([
-      prisma.contact.count({ where: { userId: req.user!.id } }),
-      prisma.task.count({ where: { userId: req.user!.id, completed: false } }),
+    const userFilter = { userId: req.user!.id };
+
+    const [contactCount, activeTasks, wonStages, automationCount, campaignCount, templateCount] = await Promise.all([
+      prisma.contact.count({ where: userFilter }),
+      prisma.task.count({ where: { ...userFilter, completed: false } }),
       prisma.contactStage.count({
         where: {
-          contact: { userId: req.user!.id },
+          contact: userFilter,
           stage: { name: 'Won' },
         },
       }),
+      prisma.automation.count({ where: userFilter }),
+      prisma.emailCampaign.count({ where: userFilter }),
+      prisma.emailTemplate.count({ where: userFilter }),
     ]);
 
     return res.json({
@@ -25,6 +30,9 @@ router.get(
         contactCount,
         openTasks: activeTasks,
         wins: wonStages,
+        automationCount,
+        campaignCount,
+        templateCount,
       },
     });
   }),
