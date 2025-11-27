@@ -38,8 +38,8 @@ simpleautomate/
    - For local dev, set:
      ```
      DATABASE_URL=postgresql://postgres:postgres@localhost:5432/simpleautomate
-     FRONTEND_URLS=http://localhost:5173
-     APP_BASE_URL=http://localhost:4000
+    FRONTEND_URLS=http://localhost:5173
+    APP_BASE_URL=http://localhost:5173
      JWT_ACCESS_SECRET=local-access
      JWT_REFRESH_SECRET=local-refresh
      CRON_SECRET=local-cron
@@ -85,7 +85,7 @@ The script logs in, builds `client/`, sets `VITE_*` env vars (if present), and r
 ### Render (backend) + GitHub Actions scheduler
 1. Update `render.yaml` with your repo URL.
 2. Provision the web service via the Render dashboard or `pwsh scripts/deploy-render.ps1`.
-3. Secrets to set: `DATABASE_URL`, `APP_BASE_URL`, `FRONTEND_URLS`, `JWT_*`, `CRON_SECRET`, etc.
+3. Secrets to set: `DATABASE_URL`, `APP_BASE_URL` (public marketing URL, e.g. `https://simpleautomate.co.uk`), `FRONTEND_URLS` (comma-separated allow list), `JWT_*`, `CRON_SECRET`, etc.
 4. Cron replacement: `.github/workflows/cron.yml` pings `POST /api/cron/run` every 15 minutes using GitHub Actions.
    - In GitHub → Settings → Secrets → Actions, create `CRON_SECRET` with the same value Render uses.
    - Actions are free for public repos, so no paid cron job is required.

@@ -37,7 +37,7 @@ app.use(attachUser);
 app.get('/robots.txt', (_req, res) => {
   res.type('text/plain').send(`User-agent: *
 Allow: /
-Sitemap: ${env.APP_BASE_URL}/sitemap.xml`);
+Sitemap: ${env.publicAppUrl}/sitemap.xml`);
 });
 
 app.get('/sitemap.xml', (_req, res) => {
@@ -45,7 +45,7 @@ app.get('/sitemap.xml', (_req, res) => {
     .map(
       (path) => `
     <url>
-      <loc>${env.APP_BASE_URL}${path}</loc>
+      <loc>${env.publicAppUrl}${path}</loc>
       <changefreq>weekly</changefreq>
     </url>`,
     )
