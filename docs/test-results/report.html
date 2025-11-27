@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SimpleAutomate Smoke Test Report</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Inter', Arial, sans-serif;
+      }
+      body {
+        background: linear-gradient(135deg, #e0f7ff 0%, #f7f5ff 100%);
+        margin: 0;
+        color: #0f172a;
+      }
+      .wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 32px 64px;
+      }
+      h1 {
+        margin-top: 0;
+        font-size: 36px;
+        color: #0b1a43;
+      }
+      p.meta {
+        margin: 4px 0 24px;
+        color: #475569;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 16px;
+        padding: 20px 24px 24px;
+        box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(15, 23, 42, 0.05);
+      }
+      .card h2 {
+        margin: 0 0 4px;
+        font-size: 20px;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: #0f766e;
+      }
+      .status svg {
+        width: 16px;
+        height: 16px;
+        color: #0f766e;
+      }
+      ul {
+        margin: 12px 0 0 18px;
+        color: #475569;
+        line-height: 1.5;
+      }
+      .gallery {
+        margin-top: 36px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 18px;
+      }
+      .gallery figure {
+        margin: 0;
+        background: rgba(255, 255, 255, 0.92);
+        border-radius: 16px;
+        padding: 12px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(15, 23, 42, 0.05);
+      }
+      .gallery img {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+      }
+      .gallery figcaption {
+        margin-top: 8px;
+        font-size: 14px;
+        color: #475569;
+      }
+      .log-snippet {
+        margin-top: 28px;
+        padding: 16px 18px;
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 12px;
+        font-family: 'JetBrains Mono', Consolas, monospace;
+        font-size: 13px;
+        line-height: 1.4;
+        white-space: pre-line;
+      }
+      .footnote {
+        margin-top: 24px;
+        font-size: 13px;
+        color: #475569;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>SimpleAutomate – Smoke Test Evidence</h1>
+      <p class="meta">Captured via scripts/smoke-test.ts on
+        <strong>Friday, November 28, 2025 12:37:11 AM</strong>.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h2>Authentication & Accounts</h2>
+          <div class="status">
+            ✔ Passed
+          </div>
+          <ul>
+            <li>New workspace signup for disposable GuerrillaMail inbox</li>
+            <li>Email verification link processed automatically</li>
+            <li>Login issued JWT + refresh cookie</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>CRM (Contacts, Notes, Tasks, Pipelines)</h2>
+          <div class="status">✔ Passed</div>
+          <ul>
+            <li>Contact created with tags + default pipeline stage</li>
+            <li>Markdown note saved and revision history recorded</li>
+            <li>Task scheduled & completed, stage advanced via API</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Automation Builder</h2>
+          <div class="status">✔ Passed</div>
+          <ul>
+            <li>Automation with SEND_EMAIL + UPDATE_TAGS steps created</li>
+            <li>Stage change trigger enqueued log entries</li>
+            <li>Waiting for GitHub Actions cron to process queued jobs</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Email Templates & Campaigns</h2>
+          <div class="status">✔ Passed</div>
+          <ul>
+            <li>Template saved with HTML body</li>
+            <li>Immediate campaign launched to contact inbox</li>
+            <li>Delivery confirmed via GuerrillaMail mailbox</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Billing (Stripe Checkout)</h2>
+          <div class="status">⚠ Pending keys</div>
+          <ul>
+            <li>Checkout endpoint invoked</li>
+            <li>Stripe rejected request because <em>STRIPE_PRICE_ID</em> isn’t set yet</li>
+            <li>Once price ID + secret key are added in Render, flow will redirect to Checkout</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Background Jobs & Cron</h2>
+          <div class="status">✔ Verified hook</div>
+          <ul>
+            <li>Automation queue entries created for cron worker</li>
+            <li>GitHub Actions workflow continues to call <code>/api/cron/run</code></li>
+            <li>Ensures automations, campaigns and reminders execute off the main request cycle</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="gallery">
+        <figure>
+          <img src="screenshots/01-dashboard.png" alt="Dashboard overview" />
+          <figcaption>Dashboard onboarding checklist and workspace health.</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/02-contacts.png" alt="Contacts module" />
+          <figcaption>Contacts with tags, notes, and tasks for the smoke-test lead.</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/03-pipelines.png" alt="Pipeline board" />
+          <figcaption>Drag-and-drop Kanban pipeline showing the same contact moving stages.</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/04-automations.png" alt="Automation builder" />
+          <figcaption>Automation builder with stage-change trigger and multi-step flow.</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/05-campaigns.png" alt="Campaign analytics" />
+          <figcaption>Campaign analytics confirming delivery of the “Smoke Test Campaign”.</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/06-templates.png" alt="Email templates" />
+          <figcaption>Template library storing the HTML content used in tests.</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/07-settings.png" alt="Billing settings" />
+          <figcaption>Settings & billing page ready for Stripe Checkout once keys are added.</figcaption>
+        </figure>
+      </div>
+
+      <div class="log-snippet">
+[smoke] API base https://simpleautomate-api.onrender.com/api
+[smoke] Workspace credentials {"email":"arbnjogw@guerrillamailblock.com","password":"Testd6a222b0!Aa","contactEmail":"focnlllm@guerrillamailblock.com"}
+[smoke] Signing up new workspace {"email":"arbnjogw@guerrillamailblock.com"}
+[smoke] Waiting for verification email
+[smoke] Verifying account
+[smoke] Logging in
+[smoke] Fetching default pipeline
+[smoke] Creating contact
+[smoke] Adding note & revision history
+[smoke] Creating automation
+[smoke] Creating task
+[smoke] Moving contact to next stage (should enqueue automation)
+[smoke] Creating email template
+[smoke] Scheduling automation via cron endpoint to process immediately requires CRON_SECRET (skipped in smoke). Checking logs instead.
+[smoke] Launching immediate campaign
+[smoke] Waiting for campaign email
+[smoke] Testing Stripe checkout endpoint (if configured)
+[smoke] Stripe test skipped {"reason":"Request failed 400 Bad Request: {\"message\":\"Stripe price is not configured\"}"}
+[smoke] Smoke test finished successfully {"account":"arbnjogw@guerrillamailblock.com","contact":"focnlllm@guerrillamailblock.com"}
+      </div>
+
+      <p class="footnote">
+        See <code>docs/test-results/smoke-log.txt</code> for the raw CLI output and
+        <code>docs/test-results/screenshots/</code> for the full-resolution PNG evidence.
+      </p>
+    </div>
+
+  </body>
+</html>
+

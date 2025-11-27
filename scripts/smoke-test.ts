@@ -1,5 +1,7 @@
 #!/usr/bin/env tsx
 import crypto from 'node:crypto';
+import path from 'node:path';
+import { promises as fs } from 'node:fs';
 
 type Mailbox = {
   address: string;
@@ -10,6 +12,9 @@ const API_URL = (process.env.API_URL ?? 'https://simpleautomate-api.onrender.com
 const FRONTEND_URL = process.env.FRONTEND_URL ?? 'https://simpleautomate.co.uk';
 const WAIT_BETWEEN_POLLS_MS = 5000;
 const MAX_WAIT_MS = 120000;
+const RESULTS_DIR = path.resolve(process.cwd(), 'docs', 'test-results');
+const ACCOUNT_FILE = path.join(RESULTS_DIR, 'account.json');
+const CONTACT_NAME = 'Smoke Test Contact';
 
 const log = (message: string, extra?: Record<string, unknown>) => {
   const payload = extra ? `${message} ${JSON.stringify(extra)}` : message;
@@ -88,10 +93,16 @@ const extractToken = (body: string) => {
 };
 
 const main = async () => {
+  await fs.mkdir(RESULTS_DIR, { recursive: true });
   log(`API base ${API_URL}`);
   const password = `Test${crypto.randomUUID().slice(0, 8)}!Aa`;
   const accountMailbox = await requestMailbox();
   const contactMailbox = await requestMailbox();
+  log('Workspace credentials', {
+    email: accountMailbox.address,
+    password,
+    contactEmail: contactMailbox.address,
+  });
 
   log('Signing up new workspace', { email: accountMailbox.address });
   await apiFetch('/auth/signup', {
@@ -127,7 +138,7 @@ const main = async () => {
   log('Creating contact');
   const contactRes = await authFetch<{ contact: { id: string } }>('/contacts', {
     body: {
-      name: 'Smoke Test Contact',
+      name: CONTACT_NAME,
       email: contactMailbox.address,
       phone: '+1-555-0100',
       tags: ['smoke', 'automation'],
@@ -238,6 +249,15 @@ const main = async () => {
     account: accountMailbox.address,
     contact: contactMailbox.address,
   });
+
+  const accountRecord = {
+    email: accountMailbox.address,
+    password,
+    contactEmail: contactMailbox.address,
+    contactName: CONTACT_NAME,
+    createdAt: new Date().toISOString(),
+  };
+  await fs.writeFile(ACCOUNT_FILE, JSON.stringify(accountRecord, null, 2), 'utf8');
 };
 
 main().catch((error) => {
